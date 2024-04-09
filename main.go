@@ -3,6 +3,7 @@ package main
 import (
 	"final-project/bckp-database/config"
 	"final-project/bckp-database/controllers"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
@@ -32,4 +33,6 @@ func main() {
 			"Error on running fiber, ",
 			err.Error())
 	}
+
+	_ = os.Mkdir("upload", 0777)
 }
