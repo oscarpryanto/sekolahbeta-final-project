@@ -22,7 +22,9 @@ func main() {
 	InitEnv()
 	config.OpenDB()
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		BodyLimit: 50 * 1024 * 1024, //50mb
+	})
 
 	// controllers.RouteCars(app)
 	controllers.RouteBckpDatabase(app)

@@ -44,6 +44,7 @@ func OpenDB() {
 func autoMigrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&model.BckpDatabase{},
+		&model.Token{},
 	)
 
 	if err != nil {

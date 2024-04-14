@@ -20,14 +20,18 @@ func LatestBackup(data model.BckpDatabase) ([]model.BckpDatabase, error) {
 		panic(err)
 	}
 
-	// data := map[string]interface{}{
-	// 	"database_name": latestBackup.DatabaseName,
-	// 	"latest_backup": map[string]interface{}{
-	// 		"id":        latestBackup.ID,
-	// 		"file_name": latestBackup.FileName,
-	// 		"timestamp": latestBackup.CreatedAt.Format("2006-01-02 15:04:05"),
-	// 	},
-	// }
-
 	return latestBackup, err
+}
+
+func BackupHistoryByName(databaseName string) ([]model.BckpDatabase, error) {
+	database := model.BckpDatabase{
+		DatabaseName: databaseName,
+	}
+
+	backupHistory, err := database.GetHistoryBackup(config.Mysql.DB)
+	if err != nil {
+		panic(err)
+	}
+
+	return backupHistory, err
 }

@@ -34,81 +34,13 @@ func (b *BckpDatabase) LatestBackup(db *gorm.DB) ([]BckpDatabase, error) {
 	return latestBackup, nil
 }
 
-func (cr *BckpDatabase) GetAllBckUp(db *gorm.DB) ([]BckpDatabase, error) {
+func (cr *BckpDatabase) GetHistoryBackup(db *gorm.DB) ([]BckpDatabase, error) {
 	res := []BckpDatabase{}
 
-	err := db.
-		Model(BckpDatabase{}).
-		Find(&res).
-		Error
-
-	if err != nil {
-		return []BckpDatabase{}, err
+	if err := db.Model(BckpDatabase{}).Where("database_name = ?", cr.DatabaseName).Order("created_at DESC").Find(&res).Error; err != nil {
+		return nil, err
 	}
 
 	return res, nil
+
 }
-
-// func (cr *Car) GetByID(db *gorm.DB) (Car, error) {
-// 	res := Car{}
-
-// 	err := db.
-// 		Model(Car{}).
-// 		Where("id = ?", cr.Model.ID).
-// 		Take(&res).
-// 		Error
-
-// 	if err != nil {
-// 		return Car{}, err
-// 	}
-
-// 	return res, nil
-// }
-
-// func (cr *Car) GetAll(db *gorm.DB) ([]Car, error) {
-// 	res := []Car{}
-
-// 	err := db.
-// 		Model(Car{}).
-// 		Find(&res).
-// 		Error
-
-// 	if err != nil {
-// 		return []Car{}, err
-// 	}
-
-// 	return res, nil
-// }
-
-// func (cr *Car) UpdateOneByID(db *gorm.DB) error {
-// 	err := db.
-// 		Model(Car{}).
-// 		Select("nama", "tipe", "tahun").
-// 		Where("id = ?", cr.Model.ID).
-// 		Updates(map[string]any{
-// 			"nama":  cr.Nama,
-// 			"tipe":  cr.Tipe,
-// 			"tahun": cr.Tahun,
-// 		}).
-// 		Error
-
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-// func (cr *Car) DeleteByID(db *gorm.DB) error {
-// 	err := db.
-// 		Model(Car{}).
-// 		Where("id = ?", cr.Model.ID).
-// 		Delete(&cr).
-// 		Error
-
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
