@@ -24,10 +24,12 @@ func RouteBckpDatabase(app *fiber.App) {
 }
 
 func validateZipFile(file *multipart.FileHeader) error {
-	contentType := file.Header.Get("Content-Type")
-	if contentType != "application/zip" {
+	fileName := file.Filename
+
+	if !strings.HasSuffix(fileName, ".zip") {
 		return errors.New("invalid file format, only zip files allowed")
 	}
+
 	return nil
 }
 
@@ -36,7 +38,7 @@ func UploadFileHandler(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(
 			map[string]any{
-				"message": "Invalid form file",
+				"message": err.Error(),
 			},
 		)
 	}

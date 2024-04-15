@@ -47,6 +47,7 @@ func autoMigrate(db *gorm.DB) error {
 		&model.Token{},
 	)
 
+
 	if err != nil {
 		return err
 	}
