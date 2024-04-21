@@ -44,3 +44,14 @@ func (cr *BckpDatabase) GetHistoryBackup(db *gorm.DB) ([]BckpDatabase, error) {
 	return res, nil
 
 }
+
+func (cr *BckpDatabase) GetBackupById(db *gorm.DB) (BckpDatabase, error) {
+	res := BckpDatabase{}
+
+	if err := db.Model(BckpDatabase{}).Where("id = ?", cr.Model.ID).Find(&res).Error; err != nil {
+		return BckpDatabase{}, err
+	}
+
+	return res, nil
+
+}

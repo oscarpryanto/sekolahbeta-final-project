@@ -35,3 +35,18 @@ func BackupHistoryByName(databaseName string) ([]model.BckpDatabase, error) {
 
 	return backupHistory, err
 }
+
+func BackupDatabaseById(databaseId uint) (model.BckpDatabase, error) {
+	database := model.BckpDatabase{
+		Model: model.Model{
+			ID: databaseId,
+		},
+	}
+
+	databaseInfo, err := database.GetBackupById(config.Mysql.DB)
+	if err != nil {
+		panic(err)
+	}
+
+	return databaseInfo, err
+}

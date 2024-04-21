@@ -7,6 +7,7 @@ import (
 	"final-project/bckp-database/utils"
 	"fmt"
 	"mime/multipart"
+	"strconv"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -45,8 +46,6 @@ func UploadFileHandler(c *fiber.Ctx) error {
 
 	dbName := c.Params("db_name")
 
-	fmt.Println(file.Filename, file.Size, file.Header["Content-Type"][0])
-
 	err = validateZipFile(file)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).
@@ -69,7 +68,7 @@ func UploadFileHandler(c *fiber.Ctx) error {
 			})
 	}
 
-	err = c.SaveFile(file, fmt.Sprintf("./upload/%d.zip", bckpDatabase.ID))
+	err = c.SaveFile(file, fmt.Sprintf("./upload/%s", bckpDatabase.FileName))
 
 	if err != nil {
 		return err
@@ -81,21 +80,43 @@ func UploadFileHandler(c *fiber.Ctx) error {
 
 func DownloadFileHandler(c *fiber.Ctx) error {
 
-	id_file := c.Params("id_file")
+	id_file, err := strconv.Atoi(c.Params("id_file"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(
+			map[string]any{
+				"message": "ID tidak valid",
+			},
+		)
+	}
 
-	zipFilePath := fmt.Sprintf("./upload/%s.zip", id_file)
+	databaseInfo, err := utils.BackupDatabaseById(uint(id_file))
+	if err != nil {
+		if err.Error() == "record not found" {
+			return c.Status(fiber.StatusNotFound).JSON(
+				map[string]any{
+					"message": "ID tidak ditemukan",
+				},
+			)
+		}
+
+		return c.Status(fiber.StatusInternalServerError).JSON(
+			map[string]any{
+				"message": "Server Error",
+			},
+		)
+	}
+
+	zipFilePath := fmt.Sprintf("./upload/%s", databaseInfo.FileName)
 
 	c.Set("Content-Disposition", "attachment; filename=example.zip")
 	c.Set("Content-Type", "application/zip")
 
-	fmt.Println(zipFilePath)
-
-	err := c.SendFile(zipFilePath)
+	err = c.SendFile(zipFilePath)
 	if err != nil {
 
 		c.Status(fiber.StatusNotFound).
 			JSON(map[string]any{
-				"message": fmt.Sprintf("Backup database dengan id = %s tidak ditemukan!", id_file),
+				"message": fmt.Sprintf("Backup database dengan id = %d tidak ditemukan!", id_file),
 			})
 	}
 	return nil
