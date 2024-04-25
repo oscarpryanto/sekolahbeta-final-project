@@ -1,0 +1,34 @@
+# Exclude all local subdirectories
+**/*
+
+# Include the Go source directory
+!/src
+
+# Include the Go module files
+!/go.mod
+!/go.sum
+
+# Exclude Git and version control
+.git
+.gitignore
+
+# Exclude editor settings
+.vscode
+.idea
+
+# Exclude pre-compiled binaries
+bin/
+obj/
+
+# Exclude testing files
+*_test.go
+
+# Exclude markdown documentation
+*.md
+
+# Exclude Docker related
+Dockerfile
+.dockerignore
+
+# Exclude environment files
+.env
